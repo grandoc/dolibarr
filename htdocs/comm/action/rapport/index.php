@@ -185,8 +185,7 @@ if ($resql)
 				print '</td>';
 				print '<td class="center">'.dol_print_date(dol_filemtime($file), 'dayhour').'</td>';
 				print '<td class="center">'.dol_print_size(dol_filesize($file)).'</td>';
-			}
-			else {
+			} else {
 				print '<td>&nbsp;</td>';
 				print '<td>&nbsp;</td>';
 				print '<td>&nbsp;</td>';
@@ -201,9 +200,7 @@ if ($resql)
 	print '</form>';
 
 	$db->free($resql);
-}
-else
-{
+} else {
 	dol_print_error($db);
 }
 

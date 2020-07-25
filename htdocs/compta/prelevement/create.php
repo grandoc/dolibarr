@@ -91,8 +91,7 @@ if (empty($reshook))
 		if ($result < 0)
 		{
 			setEventMessages($bprev->error, $bprev->errors, 'errors');
-		}
-		elseif ($result == 0)
+		} elseif ($result == 0)
 		{
 			$mesg = $langs->trans("NoInvoiceCouldBeWithdrawed", $format);
 			setEventMessages($mesg, null, 'errors');
@@ -101,9 +100,7 @@ if (empty($reshook))
 			{
 				$mesg .= '<span class="warning">'.$val."</span><br>\n";
 			}
-		}
-		else
-		{
+		} else {
 			setEventMessages($langs->trans("DirectDebitOrderCreated", $bprev->getNomUrl(1)), null);
 
 			header("Location: ".DOL_URL_ROOT.'/compta/prelevement/card.php?id='.$bprev->id);
@@ -214,9 +211,7 @@ if ($nb) {
         	}
         	print '<a class="butAction" type="submit" href="create.php?action=create&format=ALL&type='.$type.'">'.$title."</a>\n";
 		}
-	}
-	else
-	{
+	} else {
 		if ($mysoc->isInEEC())
 		{
 			$title = $langs->trans("CreateForSepaFRST");
@@ -229,9 +224,7 @@ if ($nb) {
 				$title = $langs->trans("CreateForSepaRCUR");
 				print '<a class="butActionRefused classfortooltip" href="#" title="'.$langs->trans("AmountMustBePositive").'">'.$title."</a>\n";
 			}
-		}
-		else
-		{
+		} else {
 			$title = $langs->trans("CreateAll");
 			if ($type == 'bank-transfer') {
 				$title = $langs->trans("CreateFileForPaymentByBankTransfer");
@@ -239,9 +232,7 @@ if ($nb) {
 			print '<a class="butActionRefused classfortooltip" href="#">'.$title."</a>\n";
 		}
 	}
-}
-else
-{
+} else {
 	$titlefortab = $langs->transnoentitiesnoconv("StandingOrders");
 	$title = $langs->trans("CreateAll");
 	if ($type == 'bank-transfer') {
@@ -392,17 +383,13 @@ if ($resql)
 			print '</tr>';
 			$i++;
 		}
-	}
-	else
-	{
+	} else {
 		print '<tr class="oddeven"><td colspan="6"><span class="opacitymedium">'.$langs->trans("None").'</span></td></tr>';
 	}
 	print "</table>";
 	print "</form>";
 	print "<br>\n";
-}
-else
-{
+} else {
 	dol_print_error($db);
 }
 

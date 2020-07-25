@@ -40,8 +40,7 @@ if ($cancel)
 	{
 		header("Location: ".$backtopageforcancel);
 		exit;
-	}
-	elseif (!empty($backtopage))
+	} elseif (!empty($backtopage))
 	{
 		header("Location: ".$backtopage);
 		exit;
@@ -57,8 +56,7 @@ if ($action == 'add' && !empty($permissiontoadd))
 	{
 		if ($object->fields[$key]['type'] == 'duration') {
 			if (GETPOST($key.'hour') == '' && GETPOST($key.'min') == '') continue; // The field was not submited to be edited
-		}
-		else {
+		} else {
 			if (!GETPOSTISSET($key)) continue; // The field was not submited to be edited
 		}
 		// Ignore special fields
@@ -112,17 +110,13 @@ if ($action == 'add' && !empty($permissiontoadd))
 			$urltogo = preg_replace('/--IDFORBACKTOPAGE--/', $object->id, $urltogo); // New method to autoselect project after a New on another form object creation
 			header("Location: ".$urltogo);
 			exit;
-		}
-		else
-		{
+		} else {
 			// Creation KO
 			if (!empty($object->errors)) setEventMessages(null, $object->errors, 'errors');
-			else  setEventMessages($object->error, null, 'errors');
+			else setEventMessages($object->error, null, 'errors');
 			$action = 'create';
 		}
-	}
-	else
-	{
+	} else {
 		$action = 'create';
 	}
 }
@@ -135,15 +129,12 @@ if ($action == 'update' && !empty($permissiontoadd))
 		// Check if field was submited to be edited
 		if ($object->fields[$key]['type'] == 'duration') {
 			if (!GETPOSTISSET($key.'hour') || !GETPOSTISSET($key.'min')) continue; // The field was not submited to be edited
-		}
-		elseif ($object->fields[$key]['type'] == 'boolean') {
+		} elseif ($object->fields[$key]['type'] == 'boolean') {
 			if (!GETPOSTISSET($key)) {
 				$object->$key = 0; // use 0 instead null if the field is defined as not null
 				continue;
 			}
-		}
-
-		else {
+		} else {
 			if (!GETPOSTISSET($key)) continue; // The field was not submited to be edited
 		}
 		// Ignore special fields
@@ -192,16 +183,12 @@ if ($action == 'update' && !empty($permissiontoadd))
 		if ($result > 0)
 		{
 			$action = 'view';
-		}
-		else
-		{
+		} else {
 			// Creation KO
 			setEventMessages($object->error, $object->errors, 'errors');
 			$action = 'edit';
 		}
-	}
-	else
-	{
+	} else {
 		$action = 'edit';
 	}
 }
@@ -227,9 +214,7 @@ if ($action == "update_extras" && !empty($permissiontoadd))
 	{
 		setEventMessages($langs->trans('RecordSaved'), null, 'mesgs');
 		$action = 'view';
-	}
-	else
-	{
+	} else {
 		setEventMessages($object->error, $object->errors, 'errors');
 		$action = 'edit_extras';
 	}
@@ -251,9 +236,7 @@ if ($action == 'confirm_delete' && !empty($permissiontodelete))
 		setEventMessages("RecordDeleted", null, 'mesgs');
 		header("Location: ".$backurlforlist);
 		exit;
-	}
-	else
-	{
+	} else {
 		if (!empty($object->errors)) setEventMessages(null, $object->errors, 'errors');
 		else setEventMessages($object->error, null, 'errors');
 	}
@@ -288,9 +271,7 @@ if ($action == 'confirm_deleteline' && $confirm == 'yes' && !empty($permissionto
 		setEventMessages($langs->trans('RecordDeleted'), null, 'mesgs');
 		header('Location: '.$_SERVER["PHP_SELF"].'?id='.$object->id);
 		exit;
-	}
-	else
-	{
+	} else {
 		setEventMessages($object->error, $object->errors, 'errors');
 	}
 }
@@ -317,9 +298,7 @@ if ($action == 'confirm_validate' && $confirm == 'yes' && $permissiontoadd)
 
 			$object->generateDocument($model, $outputlangs, $hidedetails, $hidedesc, $hideref);
 		}
-	}
-	else
-	{
+	} else {
 		setEventMessages($object->error, $object->errors, 'errors');
 	}
 }
@@ -346,9 +325,7 @@ if ($action == 'confirm_close' && $confirm == 'yes' && $permissiontoadd)
 
 			$object->generateDocument($model, $outputlangs, $hidedetails, $hidedesc, $hideref);
 		}
-	}
-	else
-	{
+	} else {
 		setEventMessages($object->error, $object->errors, 'errors');
 	}
 }
@@ -360,9 +337,7 @@ if ($action == 'confirm_setdraft' && $confirm == 'yes' && $permissiontoadd)
 	if ($result >= 0)
 	{
 		// Nothing else done
-	}
-	else
-	{
+	} else {
 		setEventMessages($object->error, $object->errors, 'errors');
 	}
 }
@@ -389,9 +364,7 @@ if ($action == 'confirm_reopen' && $confirm == 'yes' && $permissiontoadd)
 
 			$object->generateDocument($model, $outputlangs, $hidedetails, $hidedesc, $hideref);
 		}
-	}
-	else
-	{
+	} else {
 		setEventMessages($object->error, $object->errors, 'errors');
 	}
 }
@@ -402,9 +375,7 @@ if ($action == 'confirm_clone' && $confirm == 'yes' && !empty($permissiontoadd))
 	if (1 == 0 && !GETPOST('clone_content') && !GETPOST('clone_receivers'))
 	{
 		setEventMessages($langs->trans("NoCloneOptionsSpecified"), null, 'errors');
-	}
-	else
-	{
+	} else {
 	    $objectutil = dol_clone($object, 1); // To avoid to denaturate loaded object when setting some properties for clone or if createFromClone modifies the object. We use native clone to keep this->db valid.
 		//$objectutil->date = dol_mktime(12, 0, 0, GETPOST('newdatemonth', 'int'), GETPOST('newdateday', 'int'), GETPOST('newdateyear', 'int'));
         // ...
@@ -416,9 +387,7 @@ if ($action == 'confirm_clone' && $confirm == 'yes' && !empty($permissiontoadd))
 			else $newid = $result;
 			header("Location: ".$_SERVER['PHP_SELF'].'?id='.$newid); // Open record of new object
 			exit;
-		}
-		else
-		{
+		} else {
 		    setEventMessages($objectutil->error, $objectutil->errors, 'errors');
 			$action = '';
 		}
