@@ -14,7 +14,7 @@
  * Copyright (C) 2024       Alexandre Spangaro  <alexandre@inovea-conseil.com>
  * Copyright (C) 2025-2026	MDW					<mdeweerd@users.noreply.github.com>
  * Copyright (C) 2025		Lenin Rivas			<lenin.rivas777@gmail.com>
- * Copyright (C) 2026		Jose MARTINEZ			<jose.martinez@pichinov.com>
+ * Copyright (C) 2026		Jose MARTINEZ		<jose.martinez@pichinov.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -165,7 +165,16 @@ if ($nolinesbefore) {
 			print $langs->trans('Unit');
 			print '</span></td>';
 		} ?>
-		<td class="linecoldiscount right"><?php echo $langs->trans('ReductionShort'); ?></td>
+		<?php
+		if ($object->element == 'reception') {	// Same columns as on the line, see below: warehouse and batch instead of discount
+			print '<td class="linecolwarehouse right"><span id="title_warehouse">'.$langs->trans('Warehouse').'</span></td>';
+			if (isModEnabled('productbatch')) {
+				print '<td class="linecolbatch"><span id="title_batch">'.$langs->trans('Batch').'</span></td>';
+			}
+		} else {
+			print '<td class="linecoldiscount right">'.$langs->trans('ReductionShort').'</td>';
+		}
+		?>
 		<?php
 		// Fields for situation invoice
 		if (property_exists($this, 'situation_cycle_ref') && isset($this->situation_cycle_ref) && $this->situation_cycle_ref) {
@@ -666,8 +675,8 @@ if ((isModEnabled("service") || ($object->element == 'contrat')) && $dateSelecto
 		?>
 		function prefill_service_dates()
 		{
-			$('#date_start').val("<?php echo dol_escape_js(dol_print_date($date_start_prefill, 'day')); ?>").trigger('change');
-			$('#date_end').val("<?php echo dol_escape_js(dol_print_date($date_end_prefill, 'day')); ?>").trigger('change');
+			$('#date_start').val(<?php echo "'".dol_escape_js(dol_print_date($date_start_prefill, 'day'))."'"; ?>).trigger('change');
+			$('#date_end').val(<?php echo "'".dol_escape_js(dol_print_date($date_end_prefill, 'day'))."'"; ?>).trigger('change');
 
 			return false; // Prevent default link behaviour (which is go to href URL)
 		}
@@ -1318,7 +1327,7 @@ if (!empty($object->thirdparty)) {
 							}
 							options += '<option value="'+this.id+'" price="'+this.price+'">'+this.label+'</option>';
 						});
-						options += '<option value="inputprice" price="'+defaultprice+'"><?php echo dol_escape_js($langs->trans("InputPrice").'...'); ?></option>';
+						options += '<option value="inputprice" price="'+defaultprice+'"><?php echo dolPrintHTML($langs->trans("InputPrice").'...'); ?></option>';
 
 						console.log("finally selected defaultkey="+defaultkey+" defaultprice for buying price="+defaultprice);
 
