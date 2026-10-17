@@ -273,7 +273,7 @@ if (empty($reshook)) {
 				$result = $object->delete($user);
 				if ($result < 0) {
 					$langs->load("errors");
-					setEventMessages($langs->trans("ErrorUserCannotBeDelete"), null, 'errors');
+					setEventMessages($langs->trans("ErrorUserCannotBeDelete"), $object->errors, 'errors');
 				} else {
 					setEventMessages($langs->trans("RecordDeleted"), null);
 					header("Location: ".DOL_URL_ROOT."/user/list.php?restore_lastsearch_values=1");
@@ -390,9 +390,14 @@ if (empty($reshook)) {
 			}
 
 			// Set entity property
-			$entity = GETPOSTINT('entity');
+			// The entity selector and the superadmin checkbox are only rendered for a user that is
+			// admin and has no entity of its own (see the display code below), so the posted values
+			// must not be trusted on their own: a non admin user holding user->user->write also
+			// reaches this code.
+			$cansetentity = (!empty($user->admin) && empty($user->entity));
+			$entity = $cansetentity ? GETPOSTINT('entity') : $user->entity;
 			if (isModEnabled('multicompany')) {
-				if (GETPOSTINT('superadmin')) {
+				if ($cansetentity && GETPOSTINT('superadmin')) {
 					$object->entity = 0;
 				} else {
 					if (getDolGlobalString('MULTICOMPANY_TRANSVERSE_MODE')) {
@@ -1735,7 +1740,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 		if ($action != 'edit') {
 			print dol_get_fiche_head($head, 'user', $title, -1, 'user', 0, '', '', 0, '', 1);
 
-			$morehtmlref = '<a href="'.dolBuildUrl(DOL_URL_ROOT.'/user/vcard.php', ['id' => $object->id, 'output' => 'file', 'file' => dol_sanitizeFileName($object->getFullName($langs).'.vcf')]).'" class="refid valignmiddle" rel="noopener">';
+			$morehtmlref = '<a href="'.dolBuildUrl(DOL_URL_ROOT.'/user/vcard.php', ['id' => $object->id, 'output' => 'file', 'file' => dol_sanitizeFileName($object->getFullName($langs).'.vcf')]).'" class="refid valignmiddle" tabindex="-1" rel="noopener">';
 			$morehtmlref .= img_picto($langs->trans("Download").' '.$langs->trans("VCard").' ('.$langs->trans("AddToContacts").')', 'vcard', 'class="valignmiddle marginleftonly paddingrightonly"');
 			$morehtmlref .= '</a>';
 
@@ -2315,10 +2320,9 @@ if ($action == 'create' || $action == 'adduserldap') {
 				// a simple user can not clone an admin or superadmin and a simple admin can not clone a superadmin
 				if ((empty($object->entity) && $permissiontoclonesuperadmin) || (!empty($object->admin) && !empty($object->entity) && $permissiontocloneadmin) || ($permissiontocloneuser && empty($object->admin) && !empty($object->entity))) {
 					$cloneButtonId = '';
-					$cloneUserUrl = '';
+					$cloneUserUrl = $_SERVER["PHP_SELF"].'?id='.$object->id.'&action=clone&token='.newToken();
 
 					if (!empty($conf->use_javascript_ajax) && empty($conf->dol_use_jmobile)) {
-						$cloneUserUrl = '';
 						$cloneButtonId = 'action-clone';
 					}
 					print dolGetButtonAction($langs->trans('ToClone'), $langs->trans('ToClone'), 'clone', $cloneUserUrl, $cloneButtonId, $user->hasRight('user', 'user', 'write'), array('attr' => array('class' => 'reposition')));

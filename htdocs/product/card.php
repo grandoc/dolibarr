@@ -113,10 +113,11 @@ $formbarcode = null;
 // Get parameters
 $id  = GETPOSTINT('id');
 if (getDolGlobalString('MAIN_SECURITY_ALLOW_UNSECURED_REF_LABELS')) {
-	$ref = (GETPOSTISSET('ref') ? GETPOST('ref', 'nohtml') : null);
+	$security_check = 'nohtml';
 } else {
-	$ref = (GETPOSTISSET('ref') ? GETPOST('ref', 'alpha') : null);
+	$security_check = !getDolGlobalString('MAIN_SECURITY_ALLOW_UNSECURED_LABELS_WITH_HTML') ? 'alphanohtml' : 'restricthtml';
 }
+$ref = (GETPOSTISSET('ref') ? GETPOST('ref', $security_check) : null);
 $type = (GETPOSTISSET('type') ? GETPOSTINT('type') : Product::TYPE_PRODUCT);
 $action = (GETPOST('action', 'alpha') ? GETPOST('action', 'alpha') : 'view');
 $cancel = GETPOST('cancel', 'alpha');
@@ -3170,7 +3171,7 @@ print $formconfirm;
  * Action bar
  */
 if ($action != 'create' && $action != 'edit') {
-	$cloneProductUrl = dolBuildUrl($_SERVER["PHP_SELF"], ['action' => 'clone'], true);
+	$cloneProductUrl = dolBuildUrl($_SERVER["PHP_SELF"], ['id' => $object->id, 'action' => 'clone'], true);
 	$cloneButtonId = 'action-clone-no-ajax';
 
 	print "\n".'<div class="tabsAction">'."\n";
@@ -3188,7 +3189,6 @@ if ($action != 'create' && $action != 'edit') {
 
 			if (!isset($hookmanager->resArray['no_button_copy']) || $hookmanager->resArray['no_button_copy'] != 1) {
 				if (!empty($conf->use_javascript_ajax) && empty($conf->dol_use_jmobile)) {
-					$cloneProductUrl = '';
 					$cloneButtonId = 'action-clone';
 				}
 				print dolGetButtonAction($langs->trans('ToClone'), $langs->trans('ToClone'), 'clone', $cloneProductUrl, $cloneButtonId, $usercancreate, array('attr' => array('class' => 'reposition')));

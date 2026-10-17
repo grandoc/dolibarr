@@ -32,6 +32,7 @@
  *
  * @var string $websitekey
  */
+'@phan-var-force string $websitekey';
 
 // Load website class
 include_once DOL_DOCUMENT_ROOT.'/website/class/website.class.php';
@@ -269,7 +270,7 @@ if ($_SERVER['PHP_SELF'] != DOL_URL_ROOT.'/website/index.php') {	// If we browsi
 				$newpageid = $obj->rowid;
 				if ($newpageid != $pageid) { 		// To avoid to make a redirect on same page (infinite loop)
 					if (defined('USEDOLIBARRSERVER')) {
-						header("Location: ".DOL_URL_ROOT.'/public/website/index.php?website='.$websitekey.'&pageid='.$newpageid.'&l='.GETPOST('l', 'aZ09'));
+						header("Location: ".DOL_URL_ROOT.'/public/website/index.php?website='.urlencode((string) $websitekey).'&pageid='.$newpageid.'&l='.GETPOST('l', 'aZ09'));
 						exit;
 					} else {
 						$newpageref = $obj->pageurl;
@@ -326,7 +327,7 @@ if (empty($dolibarr_website_allow_custom_php) || ($dolibarr_website_allow_custom
 	print 'The value "'.$notdisabledsystemfunction.'" has NOT been found into the php parameter <b>current disable_functions</b> ';
 	//print '<textarea cols="100" rows="5">';
 	if (!class_exists('Form')) {
-	require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
 	}
 	if (empty($form)) {
 		$form = new Form($db);
